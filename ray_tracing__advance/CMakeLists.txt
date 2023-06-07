@@ -3,15 +3,25 @@
 #*****************************************************************************
 
 cmake_minimum_required(VERSION 3.9.6 FATAL_ERROR)
+include("C:/src/vcpkg/scripts/buildsystems/vcpkg.cmake")
 
 #--------------------------------------------------------------------------------------------------
 # Project setting
 get_filename_component(PROJNAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 set(PROJNAME vk_${PROJNAME}_KHR)
-project(${PROJNAME} LANGUAGES C CXX)
+project(${PROJNAME} LANGUAGES C CXX CUDA)
 message(STATUS "-------------------------------")
 message(STATUS "Processing Project ${PROJNAME}:")
 
+#--------------------------------------------------------------------------------------------------
+# Include PCL installed through vcpkg
+
+find_package(PCL 1.3 REQUIRED COMPONENTS common io)
+
+include_directories(${PCL_INCLUDE_DIRS})
+include_directories(${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
 
 #--------------------------------------------------------------------------------------------------
 # C++ target and defines
@@ -60,7 +70,7 @@ source_group("Shader Headers"  FILES ${GLSL_HEADERS})
 #--------------------------------------------------------------------------------------------------
 # Linkage
 #
-target_link_libraries(${PROJNAME} ${PLATFORM_LIBRARIES} nvpro_core)
+target_link_libraries(${PROJNAME} ${PLATFORM_LIBRARIES} ${PCL_LIBRARIES} nvpro_core)
 
 foreach(DEBUGLIB ${LIBRARIES_DEBUG})
   target_link_libraries(${PROJNAME} debug ${DEBUGLIB})

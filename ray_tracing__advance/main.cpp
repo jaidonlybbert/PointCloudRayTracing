@@ -36,6 +36,9 @@
 #include "nvvk/commands_vk.hpp"
 #include "nvvk/context_vk.hpp"
 
+// Point cloud library
+#include <pcl/io/ply_io.h>
+
 #include <random>
 
 //////////////////////////////////////////////////////////////////////////
