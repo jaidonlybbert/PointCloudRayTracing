@@ -3,6 +3,7 @@
 #*****************************************************************************
 
 cmake_minimum_required(VERSION 3.9.6 FATAL_ERROR)
+
 include("C:/src/vcpkg/scripts/buildsystems/vcpkg.cmake")
 
 #--------------------------------------------------------------------------------------------------
@@ -17,8 +18,10 @@ message(STATUS "Processing Project ${PROJNAME}:")
 # Include PCL installed through vcpkg
 
 find_package(PCL 1.3 REQUIRED COMPONENTS common io)
+find_package(Eigen3 3.4 REQUIRED COMPONENTS Dense)
 
 include_directories(${PCL_INCLUDE_DIRS})
+#include_directories("C:/Users/jaido/source/MixedPrecisionBlockQR/Cuda")
 include_directories(${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
@@ -70,14 +73,14 @@ source_group("Shader Headers"  FILES ${GLSL_HEADERS})
 #--------------------------------------------------------------------------------------------------
 # Linkage
 #
-target_link_libraries(${PROJNAME} ${PLATFORM_LIBRARIES} ${PCL_LIBRARIES} nvpro_core)
+target_link_libraries(${PROJNAME} ${PLATFORM_LIBRARIES} ${PCL_LIBRARIES} Eigen3::Eigen nvpro_core)
 
 foreach(DEBUGLIB ${LIBRARIES_DEBUG})
-  target_link_libraries(${PROJNAME} debug ${DEBUGLIB})
+  target_link_libraries(${PROJNAME} debug ${DEBUGLIB} pcl_filtersd pcl_kdtreed)
 endforeach(DEBUGLIB)
 
 foreach(RELEASELIB ${LIBRARIES_OPTIMIZED})
-  target_link_libraries(${PROJNAME} optimized ${RELEASELIB})
+  target_link_libraries(${PROJNAME} optimized ${RELEASELIB} pcl_filters pcl_kdtree)
 endforeach(RELEASELIB)
 
 #--------------------------------------------------------------------------------------------------
